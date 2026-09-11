@@ -237,38 +237,45 @@
       z-index: 2;
       max-width: 1400px;
       margin: 0 auto;
-      padding: 0 1.5rem;
-      display: flex;
-      gap: 0.5rem;
-      overflow-x: auto;
-      scrollbar-width: none;
+      padding: 0.85rem 1.5rem 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.6rem;
     }
 
-    .nav-tabs::-webkit-scrollbar { display: none; }
-
     .tab-btn {
-      background: transparent;
-      border: none;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
       color: var(--text-secondary);
       font-family: var(--font-sans);
       font-weight: 600;
-      font-size: 0.88rem;
-      padding: 0.8rem 1.1rem;
-      border-bottom: 2px solid transparent;
+      font-size: 0.85rem;
+      padding: 0.75rem 1rem;
       display: flex;
       align-items: center;
-      gap: 0.55rem;
+      gap: 0.6rem;
       cursor: pointer;
-      white-space: nowrap;
+      white-space: normal;
+      text-align: left;
+      line-height: 1.25;
       transition: var(--transition-fast);
     }
 
-    .tab-btn:hover { color: var(--text-primary); }
+    .tab-btn svg { flex-shrink: 0; }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--border-glass-hover);
+      background: var(--bg-surface-elevated);
+      transform: translateY(-1px);
+    }
 
     .tab-btn.active {
-      color: var(--primary);
-      border-bottom-color: var(--primary);
-      background: linear-gradient(180deg, transparent 60%, rgba(99, 102, 241, 0.08) 100%);
+      color: #fff;
+      border-color: var(--primary);
+      background: var(--gradient-brand);
+      box-shadow: var(--shadow-glow);
     }
 
     /* Intro Hero */
@@ -776,6 +783,61 @@
     .factor-badge { font-weight: 700; white-space: nowrap; }
     .factor-detail { color: var(--text-secondary); }
 
+    /* Cohort Comparison */
+    .cohort-compare-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .compare-item {
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-glass);
+    }
+
+    .compare-item-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+
+    .compare-item-values {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .compare-item-student {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--text-primary);
+    }
+
+    .compare-item-avg {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .compare-delta {
+      margin-top: 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .compare-delta.up { color: var(--success); }
+    .compare-delta.down { color: var(--danger); }
+    .compare-delta.flat { color: var(--text-muted); }
+
     .intervention-section {
       background: var(--bg-surface);
       border: 1px solid var(--border-glass);
@@ -788,6 +850,14 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .intervention-header-actions {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
     }
 
     .intervention-title {
@@ -2366,6 +2436,14 @@
             </div>
           </div>
 
+          <!-- Cohort Comparison -->
+          <div class="cohort-compare-section mt-4" id="cohort-compare-section">
+            <label class="section-sublabel">This Student vs. Cohort Average (200 tracked students):</label>
+            <div class="cohort-compare-grid" id="res-cohort-compare">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
           <!-- Prescriptive Early Intervention Plan -->
           <div class="intervention-section mt-4" id="intervention-container">
             <div class="intervention-header">
@@ -2373,10 +2451,16 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                 Prescribed Early Academic Intervention Strategy
               </h3>
-              <button type="button" class="btn btn-outline-sm" id="btn-print-intervention">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-                Print Dossier (PDF)
-              </button>
+              <div class="intervention-header-actions">
+                <button type="button" class="btn btn-outline-sm" id="btn-copy-summary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  Copy Summary
+                </button>
+                <button type="button" class="btn btn-outline-sm" id="btn-print-intervention">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                  Print Dossier (PDF)
+                </button>
+              </div>
             </div>
             
             <p class="intervention-summary-text" id="res-intervention-summary">
@@ -3368,6 +3452,301 @@
           `;
           timeline.appendChild(item);
         });
+
+        // Cohort comparison, 3D digital twin, and a small celebration for top performers
+        renderCohortComparison(pred);
+        updateDigitalTwin(pred);
+        if (pred.performance_category === "Good") fireConfetti();
+      }
+
+      // -------------------------------------------------------------
+      // 8a. Cohort Comparison (This Student vs. Cohort Average)
+      // -------------------------------------------------------------
+      function renderCohortComparison(pred) {
+        const container = document.getElementById("res-cohort-compare");
+        const section = document.getElementById("cohort-compare-section");
+        if (!container || !section) return;
+
+        const cohort = state.batchStudents;
+        if (!cohort || cohort.length === 0) { section.style.display = "none"; return; }
+        section.style.display = "";
+
+        const avg = (key) => cohort.reduce((sum, s) => sum + (parseFloat(s[key]) || 0), 0) / cohort.length;
+        const avgAttendance = avg("attendance_rate");
+        const avgInternal = avg("internal_marks");
+        const avgStudy = avg("study_hours_weekly");
+        const avgScore = avg("predicted_score");
+
+        const raw = pred.raw_inputs || {};
+        const metrics = [
+          { label: "Attendance", student: parseFloat(raw.attendance_rate ?? 0), cohortAvg: avgAttendance, unit: "%" },
+          { label: "Internal Marks", student: parseFloat(raw.internal_marks ?? 0), cohortAvg: avgInternal, unit: "/100" },
+          { label: "Study Hours / Wk", student: parseFloat(raw.study_hours_weekly ?? 0), cohortAvg: avgStudy, unit: " hrs" },
+          { label: "Predicted Score", student: pred.predicted_score, cohortAvg: avgScore, unit: "/100" }
+        ];
+
+        container.innerHTML = metrics.map(m => {
+          const diff = Math.round((m.student - m.cohortAvg) * 10) / 10;
+          const dirClass = diff > 0.5 ? "up" : diff < -0.5 ? "down" : "flat";
+          const arrow = diff > 0.5 ? "&#9650;" : diff < -0.5 ? "&#9660;" : "&#8226;";
+          const sign = diff > 0 ? "+" : "";
+          return `
+            <div class="compare-item">
+              <span class="compare-item-label">${m.label}</span>
+              <div class="compare-item-values">
+                <span class="compare-item-student">${m.student}${m.unit}</span>
+                <span class="compare-item-avg">cohort avg ${m.cohortAvg.toFixed(1)}${m.unit}</span>
+              </div>
+              <span class="compare-delta ${dirClass}">${arrow} ${sign}${diff}${m.unit} vs. cohort</span>
+            </div>
+          `;
+        }).join("");
+      }
+
+      // -------------------------------------------------------------
+      // 8b. 3D Holographic Student Digital Twin (Risk Core)
+      // -------------------------------------------------------------
+      const digitalTwin = { scene: null, camera: null, renderer: null, controls: null, core: null, wireframe: null, targetScale: 1, spinSpeed: 1.2, initialized: false };
+
+      function initDigitalTwin() {
+        const canvas = document.getElementById("digital-twin-canvas");
+        const container = document.getElementById("digital-twin-container");
+        if (!canvas || !container || typeof THREE === "undefined" || digitalTwin.initialized) return;
+
+        const width = container.clientWidth || 400;
+        const height = container.clientHeight || 220;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
+        camera.position.set(0, 0, 4.2);
+
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        renderer.setSize(width, height);
+
+        scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+        const point = new THREE.PointLight(0xffffff, 1.1);
+        point.position.set(3, 3, 4);
+        scene.add(point);
+
+        // Glowing inner core
+        const coreGeo = new THREE.IcosahedronGeometry(1, 2);
+        const coreMat = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0xef4444, emissiveIntensity: 0.55, roughness: 0.35, metalness: 0.2 });
+        const core = new THREE.Mesh(coreGeo, coreMat);
+        scene.add(core);
+
+        // Outer rotating wireframe shell
+        const shellGeo = new THREE.IcosahedronGeometry(1.55, 1);
+        const shellMat = new THREE.MeshBasicMaterial({ color: 0xef4444, wireframe: true, transparent: true, opacity: 0.55 });
+        const wireframe = new THREE.Mesh(shellGeo, shellMat);
+        scene.add(wireframe);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.1;
+        controls.enableZoom = false;
+        controls.autoRotate = false;
+
+        function resizeTwin() {
+          const w = container.clientWidth;
+          const h = container.clientHeight;
+          if (!w || !h) return;
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+          renderer.setSize(w, h);
+        }
+        window.addEventListener("resize", resizeTwin);
+        if (typeof ResizeObserver !== "undefined") new ResizeObserver(resizeTwin).observe(container);
+
+        let t = 0;
+        function animate() {
+          requestAnimationFrame(animate);
+          t += 0.016;
+          wireframe.rotation.y += 0.006 * digitalTwin.spinSpeed;
+          wireframe.rotation.x += 0.002 * digitalTwin.spinSpeed;
+          core.rotation.y -= 0.004 * digitalTwin.spinSpeed;
+          const pulse = 1 + Math.sin(t * digitalTwin.spinSpeed * 1.5) * 0.06;
+          const s = digitalTwin.targetScale * pulse;
+          core.scale.set(s, s, s);
+          controls.update();
+          renderer.render(scene, camera);
+        }
+        animate();
+
+        digitalTwin.scene = scene;
+        digitalTwin.camera = camera;
+        digitalTwin.renderer = renderer;
+        digitalTwin.controls = controls;
+        digitalTwin.core = core;
+        digitalTwin.wireframe = wireframe;
+        digitalTwin.initialized = true;
+      }
+
+      function updateDigitalTwin(pred) {
+        initDigitalTwin();
+        if (!digitalTwin.initialized) return;
+
+        const category = pred.performance_category;
+        const colorHex = category === "At Risk" ? 0xef4444 : category === "Good" ? 0x10b981 : 0xf59e0b;
+        digitalTwin.core.material.color.setHex(colorHex);
+        digitalTwin.core.material.emissive.setHex(colorHex);
+        digitalTwin.wireframe.material.color.setHex(colorHex);
+
+        // Lower predicted scores spin faster & pulse larger, reflecting instability
+        const instability = Math.max(0, Math.min(1, (75 - pred.predicted_score) / 65));
+        digitalTwin.spinSpeed = 0.7 + instability * 2.6;
+        digitalTwin.targetScale = 0.85 + instability * 0.25;
+
+        const spinDisplay = (digitalTwin.spinSpeed).toFixed(1);
+        const equilibrium = pred.predicted_score.toFixed(1);
+        const urgencyText = category === "At Risk" ? "Immediate" : category === "Average" ? "Moderate" : "Low";
+
+        document.getElementById("telem-speed").textContent = `${spinDisplay} rad/s`;
+        document.getElementById("telem-equilibrium").textContent = `${equilibrium}%`;
+        const urgencyEl = document.getElementById("telem-urgency");
+        urgencyEl.textContent = urgencyText;
+        urgencyEl.className = `telem-value ${category === "At Risk" ? "text-danger" : category === "Average" ? "text-warning" : "text-success"}`;
+
+        const statusTag = document.getElementById("twin-status-tag");
+        const statusText = document.getElementById("twin-status-text");
+        statusTag.classList.remove("status-good", "status-avg", "status-risk");
+        if (category === "At Risk") {
+          statusTag.classList.add("status-risk");
+          statusText.textContent = "Critical Flux Warning";
+        } else if (category === "Average") {
+          statusTag.classList.add("status-avg");
+          statusText.textContent = "Moderate Flux Detected";
+        } else {
+          statusTag.classList.add("status-good");
+          statusText.textContent = "Stable Equilibrium";
+        }
+      }
+
+      // -------------------------------------------------------------
+      // 8c. Celebratory Confetti (fires when a student predicts as "Good")
+      // -------------------------------------------------------------
+      function fireConfetti() {
+        const canvas = document.getElementById("confetti-canvas");
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const colors = ["#6366f1", "#10b981", "#f59e0b", "#06b6d4", "#ec4899"];
+        const particles = Array.from({ length: 140 }, () => ({
+          x: Math.random() * canvas.width,
+          y: -20 - Math.random() * canvas.height * 0.3,
+          size: 5 + Math.random() * 6,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 3,
+          vy: 2 + Math.random() * 3,
+          rotation: Math.random() * 360,
+          vrot: (Math.random() - 0.5) * 12
+        }));
+
+        const duration = 2600;
+        const start = performance.now();
+
+        function frame(now) {
+          const elapsed = now - start;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.03;
+            p.rotation += p.vrot;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+            ctx.restore();
+          });
+          if (elapsed < duration) {
+            requestAnimationFrame(frame);
+          } else {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+        }
+        requestAnimationFrame(frame);
+      }
+
+      // -------------------------------------------------------------
+      // 8d. Header Ambient 3D Knowledge Constellation (Canvas 2D)
+      // -------------------------------------------------------------
+      function initHeroConstellation() {
+        const canvas = document.getElementById("hero-3d-canvas");
+        const header = document.getElementById("main-header");
+        if (!canvas || !header) return;
+        const ctx = canvas.getContext("2d");
+
+        let width = 0, height = 0;
+        function resize() {
+          width = header.clientWidth;
+          height = header.clientHeight;
+          canvas.width = width;
+          canvas.height = height;
+        }
+        resize();
+        window.addEventListener("resize", resize);
+        if (typeof ResizeObserver !== "undefined") new ResizeObserver(resize).observe(header);
+
+        const nodeCount = Math.max(18, Math.min(42, Math.floor((width || 1200) / 32)));
+        const nodes = Array.from({ length: nodeCount }, () => ({
+          x: Math.random() * (width || 1200),
+          y: Math.random() * (height || 120),
+          z: 0.4 + Math.random() * 0.6,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: (Math.random() - 0.5) * 0.25
+        }));
+
+        let parallaxX = 0, parallaxY = 0;
+        window.addEventListener("mousemove", (e) => {
+          const rect = header.getBoundingClientRect();
+          if (e.clientY < rect.top || e.clientY > rect.bottom + 200) return;
+          parallaxX = ((e.clientX / window.innerWidth) - 0.5) * 14;
+          parallaxY = ((e.clientY - rect.top) / Math.max(1, rect.height) - 0.5) * 8;
+        });
+
+        function step() {
+          requestAnimationFrame(step);
+          if (!width || !height) return;
+          ctx.clearRect(0, 0, width, height);
+
+          nodes.forEach(n => {
+            n.x += n.vx;
+            n.y += n.vy;
+            if (n.x < 0 || n.x > width) n.vx *= -1;
+            if (n.y < 0 || n.y > height) n.vy *= -1;
+          });
+
+          for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+              const a = nodes[i], b = nodes[j];
+              const dx = a.x - b.x, dy = a.y - b.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 130) {
+                ctx.strokeStyle = `rgba(129, 140, 248, ${0.16 * (1 - dist / 130)})`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(a.x + parallaxX * a.z, a.y + parallaxY * a.z);
+                ctx.lineTo(b.x + parallaxX * b.z, b.y + parallaxY * b.z);
+                ctx.stroke();
+              }
+            }
+          }
+
+          nodes.forEach(n => {
+            const px = n.x + parallaxX * n.z;
+            const py = n.y + parallaxY * n.z;
+            const r = 1.6 * n.z + 0.8;
+            ctx.beginPath();
+            ctx.fillStyle = `rgba(165, 180, 252, ${0.5 + 0.4 * n.z})`;
+            ctx.arc(px, py, r, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+        step();
       }
 
       // -------------------------------------------------------------
@@ -3420,6 +3799,29 @@
       modalCloseBtn?.addEventListener("click", closeInterventionModal);
       modalCancelBtn?.addEventListener("click", closeInterventionModal);
       modal?.addEventListener("click", (e) => { if (e.target === modal) closeInterventionModal(); });
+
+      // Copy a plain-text version of the intervention summary + strategies
+      document.getElementById("btn-copy-summary")?.addEventListener("click", async () => {
+        if (!state.currentPrediction) { showToast("Run a prediction first."); return; }
+        const interv = state.currentPrediction.intervention;
+        const lines = [
+          `${interv.student_name} (${interv.student_id})`,
+          `Predicted Score: ${interv.predicted_score}/100 — ${interv.performance_category}`,
+          `Urgency: ${interv.urgency_level}`,
+          "",
+          interv.summary,
+          "",
+          "Recommended Strategies:",
+          ...interv.strategies.map(s => `- ${s.title} (${s.priority} priority): ${s.description}`)
+        ];
+        const text = lines.join("\n");
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast("Intervention summary copied to clipboard");
+        } catch (e) {
+          showToast("Couldn't access clipboard — try the Print option instead");
+        }
+      });
 
       // -------------------------------------------------------------
       // 8b. 3D Student Feature Space (Interactive WebGL Cluster)
@@ -4469,6 +4871,7 @@
       renderFactorInfluence();
       applyPreset(presets.atRisk);
       initCluster3D();
+      initHeroConstellation();
       checkLiveBackend();
     });
   </script>
