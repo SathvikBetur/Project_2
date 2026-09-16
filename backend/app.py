@@ -8,7 +8,8 @@ import os
 import io
 import json
 import pandas as pd
-from flask import Flask, render_template, request, jsonify, send_file
+from flask import Flask, render_template, request, jsonify, send_file, send_from_directory
+from jinja2 import ChoiceLoader, FileSystemLoader
 
 # Resolve local paths
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,6 +30,17 @@ app = Flask(
     template_folder=FRONTEND_TEMPLATES,
     static_folder=FRONTEND_STATIC
 )
+
+# Ensure templates can be loaded from frontend/templates or BASE_DIR
+app.jinja_loader = ChoiceLoader([
+    FileSystemLoader(FRONTEND_TEMPLATES),
+    FileSystemLoader(BASE_DIR),
+])
+
+@app.route("/Student_pred/frontend/static/<path:filename>")
+def fallback_static(filename):
+    """Fallback route for relative static paths in HTML."""
+    return send_from_directory(FRONTEND_STATIC, filename)
 
 # Ensure models are trained and ready on startup
 @app.before_request
